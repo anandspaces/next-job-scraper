@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { Search } from 'lucide-react';
 
 export default function ScraperForm({ onScrape }) {
   const [url, setUrl] = useState('');
@@ -20,7 +21,7 @@ export default function ScraperForm({ onScrape }) {
         required
       />
       <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
-        Scrape
+        Scrape <Search />
       </button>
     </form>
   );
