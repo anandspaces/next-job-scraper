@@ -8,9 +8,8 @@ export default function ScraperPage() {
 
   const handleScrape = async (url) => {
     try {
-      const res = await fetch(`/api/scrape?url=${encodeURIComponent(url)}`);
-      const data = await res.json();
-      setResults(data.results);
+      const res = await axios(`/api/scrape?url=${encodeURIComponent(url)}`);
+      setResults(res.data.results);
     } catch (error) {
       console.error('Error scraping:', error);
     }
