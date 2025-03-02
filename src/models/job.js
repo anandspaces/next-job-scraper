@@ -1,8 +1,19 @@
 import mongoose from "mongoose";
 
 const jobSchema = new mongoose.Schema({
-    jobTitle: String,
-    companyName: String
+  jobTitle: {
+    type: String,
+    required: true,
+    index: true
+  },
+  listings: [{
+    companyName: String,
+    url: {
+      type: String,
+      required: true,
+      unique: true
+    }
+  }]
 });
 
-module.exports = mongoose.model('Job', jobSchema);
+export default mongoose.models.Job || mongoose.model('Job', jobSchema);
