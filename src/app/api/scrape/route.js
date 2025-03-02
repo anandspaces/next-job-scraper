@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import puppeteer from 'puppeteer';
-import cheerio from 'cheerio';
+import { load } from 'cheerio';
 import dbConnect from '@/utils/dbConnect';
 import Job from '@/models/job';
 
-const jobSites = [ // Fixed typo
+const jobSites = [
   {
     url: 'https://www.linkedin.com/jobs',
     parentSelector: '.jobs-search__results-list li',
@@ -28,7 +28,7 @@ async function scrapData(site) {
     const page = await browser.newPage();
     await page.goto(site.url);
     const content = await page.content();
-    const $ = cheerio.load(content);
+    const $ = load(content);
 
     const jobs = [];
     $(site.parentSelector).each((_, element) => {
