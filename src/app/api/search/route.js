@@ -16,7 +16,9 @@ export async function GET(req) {
 
     const searchResults = await Job.find({
       jobTitle: { $regex: search, $options: 'i' }
-    }).select('jobTitle listings -_id');
+    })
+      .select('jobTitle listings -_id')
+      .limit(50); // Add pagination or limit
 
     return NextResponse.json({ success: true, results: searchResults });
     

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import ScraperForm from './components/ScraperForm';
 import ScraperResults from './components/ScraperResults';
-import { Info } from 'lucide-react';
+import { Info, AlertCircle } from 'lucide-react';
 
 export default function ScraperPage() {
   const [results, setResults] = useState([]);
@@ -17,13 +17,11 @@ export default function ScraperPage() {
 
     try {
       const res = await fetch(`/api/scrape?url=${encodeURIComponent(url)}`);
+      if (!res.ok) throw new Error('Failed to scrape data');
       const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message || 'Error scraping data');
-
       setResults(data.jobs);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'An error occurred while scraping.');
     } finally {
       setLoading(false);
     }
@@ -57,6 +55,13 @@ export default function ScraperPage() {
               Indeed, and more. Results will be displayed below and automatically
               saved to the database.
             </p>
+          </div>
+        )}
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
+            <AlertCircle className="w-5 h-5 text-red-600" />
+            <p className="text-red-600">{error}</p>
           </div>
         )}
 
