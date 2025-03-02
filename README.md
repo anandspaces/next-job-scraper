@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Job Scraper
 
 ## Getting Started
 
@@ -16,21 +16,38 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env` file in the root directory and add the following variable:
 
-## Learn More
+```bash
+MONGODB_URI=<mongo_db_url>
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Features
+- Scrape job listings from various sources
+- Store job data in MongoDB
+- Search and filter job listings
+- Responsive UI for browsing job posts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Clone the repository and install dependencies:
 
-## Deploy on Vercel
+```bash
+git clone <repository_url>
+cd job-scraper
+npm install
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+To deploy the project, follow these steps:
+
+1. Set up a MongoDB database and obtain the connection URL.
+2. Configure the `.env` file with the `MONGODB_URI`.
+3. Use a hosting service like Vercel, Netlify, or a VPS.
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
