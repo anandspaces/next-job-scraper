@@ -5,13 +5,25 @@ import ScraperResults from './components/ScraperResults';
 
 export default function ScraperPage() {
   const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleScrape = async (url) => {
+    setLoading(true);
+    setError('');
+    setResults([]);
+
     try {
-      const res = await axios(`/api/scrape?url=${encodeURIComponent(url)}`);
-      setResults(res.data.results);
-    } catch (error) {
-      console.error('Error scraping:', error);
+      const res = await fetch(`/api/scrape?url=${encodeURIComponent(url)}`);
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || 'Error scraping data');
+
+      setResults(data.jobs);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -21,9 +33,7 @@ export default function ScraperPage() {
         Web Scraper
       </h1>
       <ScraperForm onScrape={handleScrape} />
-      {results.length > 0 && (
-        <ScraperResults results={results} />
-      )}
+      <ScraperResults results={results} loading={loading} error={error} />
     </div>
   );
 }
