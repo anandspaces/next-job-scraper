@@ -2,6 +2,11 @@
 import { useState } from 'react';
 import { Search, AlertCircle } from 'lucide-react';
 
+const supportedHosts = [
+  'www.linkedin.com',
+  'www.indeed.com'
+];
+
 export default function ScraperForm({ onScrape }) {
   const [url, setUrl] = useState('');
   const [error, setError] = useState('');
@@ -9,8 +14,8 @@ export default function ScraperForm({ onScrape }) {
 
   const validateUrl = (url) => {
     try {
-      new URL(url);
-      return true;
+      const urlObj = new URL(url);
+      return supportedHosts.includes(urlObj.hostname);
     } catch {
       return false;
     }
@@ -21,7 +26,7 @@ export default function ScraperForm({ onScrape }) {
     setIsValidating(true);
 
     if (!validateUrl(url)) {
-      setError('Please enter a valid URL (include http:// or https://)');
+      setError('Please enter a valid URL (include http:// or https://)\nSupported sites: LinkedIn (linkedin.com/jobs) and Indeed (indeed.com/jobs)');
       setIsValidating(false);
       return;
     }
