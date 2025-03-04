@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
-import ScraperForm from './components/ScraperForm';
-import ScraperResults from './components/ScraperResults';
+import ScraperForm from '../components/ScraperForm';
+import ScraperResults from '../components/ScraperResults';
 import { Info, AlertCircle } from 'lucide-react';
 
 export default function ScraperPage() {
