@@ -7,6 +7,7 @@ import Job from '@/models/job';
 const jobSites = [
   {
     url: 'https://www.linkedin.com/jobs',
+    loginRequired: true,
     parentSelector: '.jobs-search__results-list li',
     titleSelector: '.base-search-card__title',
     companySelector: '.base-search-card__subtitle',
@@ -53,7 +54,7 @@ async function scrapData(site) {
     }
 
     // Wait for job results
-    await page.waitForSelector(site.waitForSelector, { timeout: 30000 });
+    await page.waitForSelector(site.parentSelector, { timeout: 30000 });
 
     // Scroll to load more jobs
     await autoScroll(page);
@@ -62,16 +63,18 @@ async function scrapData(site) {
     const $ = load(content);
 
     const jobs = [];
-    $(site.parentSelector).each((_, element) => {
+    $(site.parentSelector).each((element) => {
       const jobTitle = $(element).find(site.titleSelector).text().trim();
       const companyName = $(element).find(site.companySelector).text().trim();
       const jobUrl = $(element).find(site.linkSelector).attr('href');
       
       if (jobTitle && companyName && jobUrl) {
+        const formattedUrl = jobUrl.startsWith('http') ? jobUrl : new URL(jobUrl, site.url).href;
         jobs.push({
           jobTitle,
           companyName,
-          url: new URL(jobUrl, site.url).href
+          // url: new URL(jobUrl, site.url).href
+          url: formattedUrl
         });
       }
     });
@@ -103,11 +106,11 @@ async function autoScroll(page) {
   });
 }
 
-export async function GET() {
+export async function GET(request) {
   await dbConnect();
 
   try {
-    const urlParam = req.nextUrl.searchParams.get('url');
+    const urlParam = request.nextUrl.searchParams.get('url');
     if (!urlParam) {
       return NextResponse.json(
         { success: false, error: 'URL parameter is required' },

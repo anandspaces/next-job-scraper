@@ -5,7 +5,7 @@ describe('ScraperResults Component', () => {
   test('renders loading state', () => {
     render(<ScraperResults results={[]} loading={true} error={null} />);
     
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    expect(screen.getByRole('loading')).toBeInTheDocument();
   });
 
   test('renders error message when an error occurs', () => {
