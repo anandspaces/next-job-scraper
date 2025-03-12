@@ -47,7 +47,7 @@ export default function ScraperForm({ onScrape }) {
         <div className="flex-1 relative">
           <input
             type="url"
-            placeholder="Enter job board URL (e.g., https://www.linkedin.com/jobs)"
+            placeholder="Enter job board URL"
             value={url}
             onChange={(e) => {
               setUrl(e.target.value);
