@@ -1,8 +1,8 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'Web Scraper App',
-  description: 'Scrape web pages easily',
+  title: 'Job Scraper App',
+  description: 'Scrape Jobs easily',
 };
 
 export default function RootLayout({ children }) {
