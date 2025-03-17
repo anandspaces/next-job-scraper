@@ -4,7 +4,7 @@ import { Briefcase, Building, ExternalLink } from 'lucide-react';
 export default function ScraperResults({ results, loading, error }) {
   if (loading) {
     return (
-      <div className="w-full max-w-3xl mt-8 flex justify-center">
+      <div role="loading" className="w-full max-w-3xl mt-8 flex justify-center">
         <div className="animate-pulse flex space-x-4">
           <div className="flex-1 space-y-6 py-1">
             <div className="h-4 bg-gray-200 rounded w-3/4"></div>

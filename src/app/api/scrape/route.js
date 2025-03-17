@@ -7,6 +7,7 @@ import Job from '@/models/job';
 const jobSites = [
   {
     url: 'https://www.linkedin.com/jobs',
+    loginRequired: true,
     parentSelector: '.jobs-search__results-list li',
     titleSelector: '.base-search-card__title',
     companySelector: '.base-search-card__subtitle',
@@ -68,10 +69,12 @@ async function scrapData(site) {
       const jobUrl = $(element).find(site.linkSelector).attr('href');
       
       if (jobTitle && companyName && jobUrl) {
+        const formattedUrl = jobUrl.startsWith('http') ? jobUrl : new URL(jobUrl, site.url).href;
         jobs.push({
           jobTitle,
           companyName,
-          url: new URL(jobUrl, site.url).href
+          // url: new URL(jobUrl, site.url).href
+          url: formattedUrl
         });
       }
     });

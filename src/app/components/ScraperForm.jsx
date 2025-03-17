@@ -4,7 +4,8 @@ import { Search, AlertCircle } from 'lucide-react';
 
 const supportedHosts = [
   'www.linkedin.com',
-  'www.indeed.com'
+  'www.indeed.com',
+  'internshala.com'
 ];
 
 export default function ScraperForm({ onScrape }) {
