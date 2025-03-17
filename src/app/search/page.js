@@ -107,8 +107,8 @@
 // }
 'use client';
 import { useState } from 'react';
-import SearchForm from '@/components/SearchForm';
-import SearchResults from '@/components/SearchResults';
+import SearchForm from '../components/SearchForm';
+import SearchResults from '../components/SearchResults';
 
 export default function SearchPage() {
   const [results, setResults] = useState([]);

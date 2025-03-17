@@ -1,5 +1,6 @@
 'use client';
 import { Search, AlertCircle } from 'lucide-react';
+import { useState } from 'react';
 
 export default function SearchForm({ onSearch, loading }) {
   const [query, setQuery] = useState('');
