@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Search, AlertCircle } from 'lucide-react';
+import { Search, AlertCircle,Briefcase, Building, Globe } from 'lucide-react';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
@@ -18,10 +18,13 @@ export default function SearchPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
+      // const res = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
+      const res = await fetch(`http://localhost:3001/search?search=${query}`);
       if (!res.ok) throw new Error('Failed to fetch results');
       const data = await res.json();
-      setResults(data.results);
+      setResults(data);
+      // setResults(data.results);
+      console.log(data);
     } catch (err) {
       setError(err.message || 'An error occurred while searching.');
     } finally {
@@ -35,7 +38,7 @@ export default function SearchPage() {
         <h1 className="text-3xl font-bold text-gray-800 mb-8">
           Find Job Listings by Title
         </h1>
-        
+
         <form onSubmit={handleSearch} className="flex gap-4 mb-8">
           <input
             type="text"
@@ -69,34 +72,50 @@ export default function SearchPage() {
           </div>
         )}
 
-        {!loading && results.length > 0 && (
+        {/* {!loading && results.length > 0 && (
           <div className="space-y-6">
             {results.map((result, index) => (
               <div key={index} className="bg-white p-6 rounded-lg shadow-md">
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">
                   {result.jobTitle}
                 </h3>
-                <div className="space-y-4">
-                  {result.listings.map((listing, listingIndex) => (
-                    <div key={listingIndex} className="border-l-4 border-blue-200 pl-4">
-                      <p className="text-gray-600 font-medium mb-1">
-                        {listing.companyName}
-                      </p>
-                      <a 
-                        href={listing.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline break-words"
-                      >
-                        {listing.url}
-                      </a>
-                    </div>
-                  ))}
-                </div>
+                <p className="text-gray-600">{result.companyName}</p>
+                <p className="text-gray-600">{result.site}</p>
               </div>
             ))}
           </div>
-        )}
+        )} */}
+        {!loading && results.length > 0 && (
+  <div className="space-y-6">
+    {results.map((result, index) => (
+      <div
+        key={index}
+        className="bg-white p-6 rounded-xl shadow-lg transition-transform transform hover:scale-105 hover:shadow-xl border border-gray-200"
+      >
+        <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2 mb-2">
+          <Briefcase className="h-6 w-6 text-blue-600" />
+          {result.jobTitle}
+        </h3>
+        <p className="text-lg text-gray-700 font-medium flex items-center gap-2">
+          <Building className="h-5 w-5 text-gray-500" />
+          {result.companyName}
+        </p>
+        <p className="text-gray-600 flex items-center gap-2 mt-1">
+          <Globe className="h-5 w-5 text-gray-500" />
+          <a
+            href={result.site}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:underline"
+          >
+            {result.site}
+          </a>
+        </p>
+      </div>
+    ))}
+  </div>
+)}
+
 
         {!loading && results.length === 0 && query && !error && (
           <p className="text-gray-600">No results found for "{query}"</p>

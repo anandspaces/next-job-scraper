@@ -6,11 +6,11 @@ import Job from '@/models/job';
 
 const jobSites = [
   {
-    url: 'https://www.linkedin.com/jobs',
-    loginRequired: true,
-    parentSelector: '.jobs-search__results-list li',
+    url: 'https://www.linkedin.com/jobs/search?trk=guest_homepage-basic_guest_nav_menu_jobs&position=1&pageNum=0',
+    loginRequired: false,
+    parentSelector: '.jobs-search__results-list',
     titleSelector: '.base-search-card__title',
-    companySelector: '.base-search-card__subtitle',
+    companySelector: '.hidden-nested-link',
     linkSelector: '.base-card__full-link'
   },
   {
@@ -19,14 +19,20 @@ const jobSites = [
     titleSelector: '.jobTitle',
     companySelector: '.companyName',
     linkSelector: '.jcs-JobTitle'
-  }
+  },
+  {
+    url: 'https://internshala.com/jobs//',
+    parentSelector: '.company',
+    titleSelector: '.job-title-href',
+    companySelector: '.company-name'
+}
 ];
 
 async function scrapData(site) {
   let browser;
   try {
     browser = await puppeteer.launch({
-      headless: 'new',
+      headless: false,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -49,7 +55,7 @@ async function scrapData(site) {
 
     // Handle LinkedIn login requirement
     if (site.loginRequired) {
-      await page.waitForSelector('.nav__button-secondary', { timeout: 5000 });
+      await page.waitForSelector('.modal__dismiss', { timeout: 5000 });
       throw new Error('LinkedIn requires manual login for scraping');
     }
 
@@ -66,15 +72,15 @@ async function scrapData(site) {
     $(site.parentSelector).each((element) => {
       const jobTitle = $(element).find(site.titleSelector).text().trim();
       const companyName = $(element).find(site.companySelector).text().trim();
-      const jobUrl = $(element).find(site.linkSelector).attr('href');
+      // const jobUrl = $(element).find(site.linkSelector).attr('href');
       
       if (jobTitle && companyName && jobUrl) {
-        const formattedUrl = jobUrl.startsWith('http') ? jobUrl : new URL(jobUrl, site.url).href;
+        // const formattedUrl = jobUrl.startsWith('http') ? jobUrl : new URL(jobUrl, site.url).href;
         jobs.push({
           jobTitle,
           companyName,
           // url: new URL(jobUrl, site.url).href
-          url: formattedUrl
+          // url: formattedUrl
         });
       }
     });
@@ -84,7 +90,7 @@ async function scrapData(site) {
     console.error(`Scraping error: ${error}`);
     throw new Error(`Failed to scrape ${site.url}: ${error.message}`);
   } finally {
-    if (browser) await browser.close();
+    // if (browser) await browser.close();
   }
 }
 
@@ -158,7 +164,9 @@ export async function GET(request) {
     return NextResponse.json({ 
       success: true, 
       message: 'Job listings updated successfully' ,
-      jobs
+      jobs: {
+        jobs,websiteScraped: targetSite.url.split('/')[2]
+      }
     });
     
   } catch (error) {
