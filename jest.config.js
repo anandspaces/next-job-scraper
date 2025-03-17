@@ -1,9 +1,3 @@
-import nextJest from 'next/jest';
-
-const createJestConfig = nextJest({
-  dir: './',
-});
-
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jest-environment-jsdom',
@@ -12,7 +6,9 @@ const customJestConfig = {
     '\\.(css|scss|sass|less)$': 'jest-transform-stub', // Stub styles
     '\\.(jpg|jpeg|png|gif|webp|svg)$': 'jest-transform-stub', // Stub images
   },
-  transform: {},
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }], // ✅ Transform ESM
+  },
 };
 
-export default createJestConfig(customJestConfig);
+export default customJestConfig;

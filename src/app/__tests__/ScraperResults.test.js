@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import ScraperResults from '../ScraperResults';
+import ScraperResults from '../components/ScraperResults';
 
 describe('ScraperResults Component', () => {
   test('renders loading state', () => {

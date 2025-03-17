@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import ScraperForm from '../ScraperForm';
+import ScraperForm from '../components/ScraperForm';
 
 describe('ScraperForm Component', () => {
   let mockOnScrape;

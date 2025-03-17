@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import SearchResults from '../SearchResults';
+import SearchResults from '../components/SearchResults';
 
 describe('SearchResults Component', () => {
   test('renders loading state with skeleton loaders', () => {
