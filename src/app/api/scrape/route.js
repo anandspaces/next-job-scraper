@@ -19,6 +19,91 @@ const jobSites = [
     titleSelector: '.jobTitle',
     companySelector: '.companyName',
     linkSelector: '.jcs-JobTitle'
+  },
+  {
+    url: 'https://www.foundit.in',
+    parentSelector: '.jobTupleHeader',
+    titleSelector: '.jobTitle',
+    companySelector: '.companyName',
+    linkSelector: 'a.jobTupleHeader'
+  },
+  {
+    url: 'https://www.naukri.com',
+    loginRequired: true,
+    parentSelector: '.jobTuple',
+    titleSelector: '.title',
+    companySelector: '.subTitle',
+    linkSelector: 'a.title'
+  },
+  {
+    url: 'https://www.shine.com',
+    parentSelector: '.search_listing',
+    titleSelector: '.job_title_anchor',
+    companySelector: '.job_comp_name',
+    linkSelector: 'a.job_title_anchor'
+  },
+  {
+    url: 'https://www.timesjobs.com',
+    parentSelector: '.clearfix.job-bx',
+    titleSelector: 'h2 a',
+    companySelector: '.joblist-comp-name',
+    linkSelector: 'h2 a'
+  },
+  {
+    url: 'https://www.hirect.in',
+    parentSelector: '.job-card',
+    titleSelector: '.job-title',
+    companySelector: '.company-name',
+    linkSelector: 'a.job-card-link'
+  },
+  {
+    url: 'https://www.instahyre.com',
+    parentSelector: '.job-listing',
+    titleSelector: '.job-title',
+    companySelector: '.company-name',
+    linkSelector: 'a.job-title'
+  },
+  {
+    url: 'https://www.quikr.com/jobs',
+    parentSelector: '.job-card',
+    titleSelector: '.job-title',
+    companySelector: '.company-name',
+    linkSelector: 'a.job-title'
+  },
+  {
+    url: 'https://www.freshersworld.com',
+    parentSelector: '.job-container',
+    titleSelector: '.latest-jobs-title',
+    companySelector: '.company-name',
+    linkSelector: 'a.latest-jobs-title'
+  },
+  {
+    url: 'https://www.jobsora.com',
+    parentSelector: '.job-item',
+    titleSelector: '.job-title',
+    companySelector: '.company-name',
+    linkSelector: 'a.job-title'
+  },
+  {
+    url: 'https://www.jobsforher.com',
+    parentSelector: '.job-card',
+    titleSelector: '.job-title',
+    companySelector: '.company-name',
+    linkSelector: 'a.job-title'
+  },
+  {
+    url: 'https://www.apna.co',
+    parentSelector: '.job-card',
+    titleSelector: '.job-title',
+    companySelector: '.company-name',
+    linkSelector: 'a.job-title'
+  },
+  {
+    url: 'https://www.workindia.in',
+    parentSelector: '.job-card',
+    titleSelector: '.job-title',
+    companySelector: '.company-name',
+    linkSelector: 'a.job-title'
   }
 ];
 
@@ -53,8 +138,20 @@ async function scrapData(site) {
       throw new Error('LinkedIn requires manual login for scraping');
     }
 
+    if (site.url.includes('foundit.in')) {
+      await page.waitForSelector('.jobTupleHeader', { timeout: 30000 });
+      await page.evaluate(() => {
+        document.querySelectorAll('.jobTupleHeader').forEach(el => el.style.display = 'block');
+      });
+    }
+
     // Wait for job results
     await page.waitForSelector(site.waitForSelector, { timeout: 30000 });
+
+     // Handle infinite scroll for portals like Naukri
+  if (site.url.includes('naukri.com')) {
+    await autoScroll(page, 5); // Scroll 5 times
+  }
 
     // Scroll to load more jobs
     await autoScroll(page);
@@ -88,22 +185,64 @@ async function scrapData(site) {
   }
 }
 
-async function autoScroll(page) {
-  await page.evaluate(async () => {
-    await new Promise((resolve) => {
-      let totalHeight = 0;
-      const distance = 500;
-      const timer = setInterval(() => {
-        const scrollHeight = document.body.scrollHeight;
-        window.scrollBy(0, distance);
-        totalHeight += distance;
-        if (totalHeight >= scrollHeight) {
-          clearInterval(timer);
-          resolve();
-        }
-      }, 200);
+// async function autoScroll(page) {
+//   await page.evaluate(async () => {
+//     await new Promise((resolve) => {
+//       let totalHeight = 0;
+//       const distance = 500;
+//       const timer = setInterval(() => {
+//         const scrollHeight = document.body.scrollHeight;
+//         window.scrollBy(0, distance);
+//         totalHeight += distance;
+//         if (totalHeight >= scrollHeight) {
+//           clearInterval(timer);
+//           resolve();
+//         }
+//       }, 200);
+//     });
+//   });
+// }
+
+// async function autoScroll(page) {
+//   let previousHeight;
+//   let attempts = 0;
+  
+//   while (attempts < 5) { // Limit scroll attempts
+//     previousHeight = await page.evaluate('document.body.scrollHeight');
+//     await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
+//     await page.waitForTimeout(2000); // Wait for content to load
+//     const newHeight = await page.evaluate('document.body.scrollHeight');
+    
+//     if (newHeight === previousHeight) break;
+//     attempts++;
+//   }
+// }
+
+async function autoScroll(page, maxScrolls = 3) {
+  let scrollCount = 0;
+  
+  while (scrollCount < maxScrolls) {
+    await page.evaluate(async () => {
+      await new Promise((resolve) => {
+        let totalHeight = 0;
+        const distance = 500;
+        const timer = setInterval(() => {
+          const scrollHeight = document.body.scrollHeight;
+          window.scrollBy(0, distance);
+          totalHeight += distance;
+          
+          if (totalHeight >= scrollHeight) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, 200);
+      });
     });
-  });
+    
+    // Wait for new content to load
+    await page.waitForTimeout(2000);
+    scrollCount++;
+  }
 }
 
 export async function GET() {

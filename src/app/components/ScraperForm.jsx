@@ -5,7 +5,19 @@ import { Search, AlertCircle } from 'lucide-react';
 const supportedHosts = [
   'www.linkedin.com',
   'www.indeed.com',
-  'internshala.com'
+  'internshala.com',
+  'www.foundit.in',
+  'www.naukri.com',
+  'www.shine.com',
+  'www.timesjobs.com',
+  'www.hirect.in',
+  'www.instahyre.com',
+  'www.quikr.com',
+  'www.freshersworld.com',
+  'www.jobsora.com',
+  'www.jobsforher.com',
+  'www.apna.co',
+  'www.workindia.in'
 ];
 
 export default function ScraperForm({ onScrape }) {
