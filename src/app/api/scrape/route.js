@@ -14,6 +14,12 @@ const jobSites = [
     linkSelector: '.base-card__full-link'
   },
   {
+    url: 'https://internshala.com/jobs//',
+    parentSelector: '.company',
+    titleSelector: '.job-title-href',
+    companySelector: '.company-name'
+  },
+  {
     url: 'https://www.indeed.com/jobs',
     parentSelector: '.jobsearch-ResultsList li',
     titleSelector: '.jobTitle',
