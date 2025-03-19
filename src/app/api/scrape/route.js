@@ -6,8 +6,8 @@ import Job from '@/models/job';
 
 const jobSites = [
   {
-    url: 'https://www.linkedin.com/jobs',
-    loginRequired: true,
+    url: 'https://www.linkedin.com/jobs/search?trk=guest_homepage-basic_guest_nav_menu_jobs&position=1&pageNum=0',
+    loginRequired: false,
     parentSelector: '.jobs-search__results-list li',
     titleSelector: '.base-search-card__title',
     companySelector: '.base-search-card__subtitle',
@@ -117,7 +117,8 @@ async function scrapData(site) {
   let browser;
   try {
     browser = await puppeteer.launch({
-      headless: 'new',
+      // headless: 'new',
+      headless: false,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -140,8 +141,9 @@ async function scrapData(site) {
 
     // Handle LinkedIn login requirement
     if (site.loginRequired) {
-      await page.waitForSelector('.nav__button-secondary', { timeout: 5000 });
-      throw new Error('LinkedIn requires manual login for scraping');
+      // await page.waitForSelector('.nav__button-secondary', { timeout: 5000 });
+      await page.waitForSelector('.modal__dismiss', { timeout: 5000 });
+      throw new Error('Requires manual login for scraping');
     }
 
     if (site.url.includes('foundit.in')) {
@@ -151,13 +153,13 @@ async function scrapData(site) {
       });
     }
 
+    // Handle infinite scroll for portals like Naukri
+    if (site.url.includes('naukri.com')) {
+      await autoScroll(page, 5); // Scroll 5 times
+    }
+
     // Wait for job results
     await page.waitForSelector(site.waitForSelector, { timeout: 30000 });
-
-     // Handle infinite scroll for portals like Naukri
-  if (site.url.includes('naukri.com')) {
-    await autoScroll(page, 5); // Scroll 5 times
-  }
 
     // Scroll to load more jobs
     await autoScroll(page);
