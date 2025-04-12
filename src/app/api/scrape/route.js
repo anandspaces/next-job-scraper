@@ -117,7 +117,6 @@ async function scrapData(site) {
   let browser;
   try {
     browser = await puppeteer.launch({
-      // headless: 'new',
       headless: false,
       args: [
         '--no-sandbox',
@@ -141,7 +140,6 @@ async function scrapData(site) {
 
     // Handle LinkedIn login requirement
     if (site.loginRequired) {
-      // await page.waitForSelector('.nav__button-secondary', { timeout: 5000 });
       await page.waitForSelector('.modal__dismiss', { timeout: 5000 });
       throw new Error('Requires manual login for scraping');
     }
@@ -159,7 +157,7 @@ async function scrapData(site) {
     }
 
     // Wait for job results
-    await page.waitForSelector(site.waitForSelector, { timeout: 30000 });
+    await page.waitForSelector(site.parentSelector, { timeout: 30000 });
 
     // Scroll to load more jobs
     await autoScroll(page);
@@ -174,13 +172,16 @@ async function scrapData(site) {
       const jobUrl = $(element).find(site.linkSelector).attr('href');
       
       if (jobTitle && companyName && jobUrl) {
-        const formattedUrl = jobUrl.startsWith('http') ? jobUrl : new URL(jobUrl, site.url).href;
+        const isAbsoluteUrl = jobUrl.startsWith('http');
+        console.log('isAbsoluteUrl', isAbsoluteUrl);
+        const formattedUrl = isAbsoluteUrl ? jobUrl : new URL(jobUrl, site.url).href;
         jobs.push({
           jobTitle,
           companyName,
-          // url: new URL(jobUrl, site.url).href
           url: formattedUrl
         });
+      } else {
+        console.warn('Skipping job listing due to missing data:', { jobTitle, companyName, jobUrl });
       }
     });
 
@@ -253,7 +254,7 @@ async function autoScroll(page, maxScrolls = 3) {
   }
 }
 
-export async function GET() {
+export async function GET(req) {
   await dbConnect();
 
   try {
@@ -282,6 +283,8 @@ export async function GET() {
         { status: 400 }
       );
     }
+
+    console.log(targetSite)
 
     const jobs = await scrapData(targetSite);
 

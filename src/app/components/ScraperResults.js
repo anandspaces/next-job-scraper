@@ -48,9 +48,9 @@ export default function ScraperResults({ results, loading, error }) {
                       {result.companyName}
                     </p>
                   </div>
-                  {result.url && (
+                  {result.site && (
                     <a
-                      href={result.url}
+                      href={result.site}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2 text-gray-500 hover:text-blue-600 transition"
