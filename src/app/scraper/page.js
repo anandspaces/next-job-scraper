@@ -16,7 +16,8 @@ export default function ScraperPage() {
     setResults([]);
 
     try {
-      const res = await fetch(`/api/scrape?url=${encodeURIComponent(url)}`);
+      // const res = await fetch(`/api/scrape?url=${encodeURIComponent(url)}`);
+      const res = await fetch(`http://localhost:3001/scrape?q=${encodeURIComponent(url)}`);
       if (!res.ok) throw new Error('Failed to scrape data');
       const data = await res.json();
       setResults(data.jobs);

@@ -2,6 +2,7 @@
 import { Briefcase, Building, ExternalLink } from 'lucide-react';
 
 export default function ScraperResults({ results, loading, error }) {
+  console.log(results);
   if (loading) {
     return (
       <div role="loading" className="w-full max-w-3xl mt-8 flex justify-center">
@@ -48,9 +49,9 @@ export default function ScraperResults({ results, loading, error }) {
                       {result.companyName}
                     </p>
                   </div>
-                  {result.url && (
+                  {result.site && result.link && (
                     <a
-                      href={result.url}
+                      href={`https://www.${result.site}${result.link}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2 text-gray-500 hover:text-blue-600 transition"
